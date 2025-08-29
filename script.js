@@ -61,10 +61,18 @@ const container = document.querySelector('.container')
 
 const btnEquals = document.querySelector('.equals')
 
+const btnClear = document.querySelector('.clear')
+
+btnClear.addEventListener('click', function clearAll(){
+    totalInput.totalDisplay = []
+    totalInput.operatorList = []
+})
+
 btnEquals.addEventListener('click', function compute(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length-1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length-1] === '-' ||
         totalInput.totalDisplay[totalInput.totalDisplay.length-1] === 'x' || totalInput.totalDisplay[totalInput.totalDisplay.length-1] === '/' ){
-        totalInput.totalDisplay.pop()
+        totalInput.totalDisplay.splice(-1, 1)
+        totalInput.operatorList.splice(-1, 1)
     }
     while (totalInput.operatorList.length > 0){
         for (let i = 1; i <= totalInput.operatorList.length; i++){

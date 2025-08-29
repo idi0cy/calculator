@@ -46,6 +46,14 @@
     gap:5px;
 }
 
+.clear {
+    flex:1;
+    border-width:2px;
+    border-style:solid;
+    border-radius:10px;
+    border-color:orange;
+}
+
 .number {
     flex:1;
     border-width:2px;
