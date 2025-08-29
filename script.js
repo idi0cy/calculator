@@ -1,20 +1,27 @@
-function operate(val1, val2, operator){
+function operate(val1, val2, operator, i){
+    let theReturn = 0
     if (operator === '+') {
-        add(val1, val2)
+        theReturn = add(val1, val2)
     } else if (operator === '-') {
-        subtract(val1, val2)
+        theReturn = subtract(val1, val2)
     } else if (operator === 'x') {
-        multiply(val1, val2)
+        theReturn = multiply(val1, val2)
     } else if (operator === '/') {
-        divide(val1, val2)
+        theReturn = divide(val1, val2)
     }
+
+    totalInput.totalDisplay.splice((i + (i-2)), 3, theReturn.toString())
+    totalInput.operatorList.splice((i-1), 1)
+    console.log(totalInput.totalDisplay)
 }
 function add(val1, val2){
-    let rtrnVal = val1 + val2
+    let rtrnVal = (val1 * 100) + (val2 * 100)
+    rtrnVal = rtrnVal / 100
     return rtrnVal
 }
 function subtract(val1, val2){
-    let rtrnVal = val1 - val2
+    let rtrnVal = (val1 * 100) - (val2 * 100)
+    rtrnVal = rtrnVal / 100
     return rtrnVal
 }
 function multiply(val1, val2){
@@ -29,6 +36,7 @@ function divide(val1, val2){
 
 let totalInput = {
     totalDisplay: [],
+    operatorList: [],
 }
 
 const display = document.querySelector(".display")
@@ -51,19 +59,54 @@ const btnDivide = document.querySelector('.divide')
 
 const container = document.querySelector('.container')
 
+const btnEquals = document.querySelector('.equals')
+
+btnEquals.addEventListener('click', function compute(){
+    if (totalInput.totalDisplay[totalInput.totalDisplay.length-1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length-1] === '-' ||
+        totalInput.totalDisplay[totalInput.totalDisplay.length-1] === 'x' || totalInput.totalDisplay[totalInput.totalDisplay.length-1] === '/' ){
+        totalInput.totalDisplay.pop()
+    }
+    while (totalInput.operatorList.length > 0){
+        for (let i = 1; i <= totalInput.operatorList.length; i++){
+            if (totalInput.operatorList[i-1] === 'x' || totalInput.operatorList[i-1] === '/'){
+                let value1 = parseFloat(totalInput.totalDisplay[(i+i-1)-1])
+                let value2 = parseFloat(totalInput.totalDisplay[(i+i-1)+1])
+                let theOperator = totalInput.operatorList[i-1]
+                operate(value1, value2, theOperator, i)
+                
+            }
+        }
+        for (let i = 1; i<= totalInput.operatorList.length; i++){
+            if (totalInput.operatorList[i-1] === '+' || totalInput.operatorList[i-1] === '-') {
+                let theValue1 = parseFloat(totalInput.totalDisplay[(i+i-1)-1])
+                let theValue2 = parseFloat(totalInput.totalDisplay[(i+i-1)+1])
+                let usedOperator = totalInput.operatorList[i-1]
+                operate(theValue1, theValue2, usedOperator, i)
+            }
+        }
+    }
+    
+    
+})
+
 container.addEventListener('mouseover', function updateDisplay(){
+    display.textContent = totalInput.totalDisplay.join(' ')
+})
+
+display.addEventListener('mouseover', function updateDisplay(){
     display.textContent = totalInput.totalDisplay.join(' ')
 })
 
 btnAdd.addEventListener('click', function addOperator(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
-        || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === 'x' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '/'){
+        || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === 'x' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '/'
+        || totalInput.totalDisplay.length === 0){
 
     } else {
         totalInput.totalDisplay.push('+')
+        totalInput.operatorList.push('+')
     }
 
-    console.log(totalInput.totalDisplay)
 })
 btnSubtract.addEventListener('click', function addOperator(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -71,9 +114,10 @@ btnSubtract.addEventListener('click', function addOperator(){
 
     } else {
         totalInput.totalDisplay.push('-')
+        totalInput.operatorList.push('-')
     }
 
-    console.log(totalInput.totalDisplay)
+    
 })
 btnMultiply.addEventListener('click', function addOperator(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -81,9 +125,10 @@ btnMultiply.addEventListener('click', function addOperator(){
 
     } else {
         totalInput.totalDisplay.push('x')
+        totalInput.operatorList.push('x')
     }
 
-    console.log(totalInput.totalDisplay)
+    
 })
 btnDivide.addEventListener('click', function addOperator(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -91,9 +136,10 @@ btnDivide.addEventListener('click', function addOperator(){
 
     } else {
         totalInput.totalDisplay.push('/')
+        totalInput.operatorList.push('/')
     }
 
-    console.log(totalInput.totalDisplay)
+    
 })
 
 btnOne.addEventListener('click', function addNumber(){
@@ -107,7 +153,7 @@ btnOne.addEventListener('click', function addNumber(){
         totalInput.totalDisplay[totalInput.totalDisplay.length - 1] = totalInput.totalDisplay[totalInput.totalDisplay.length - 1] + '1'
     }
     
-    console.log(totalInput.totalDisplay)
+    
 })
 btnTwo.addEventListener('click', function addNumber(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -120,7 +166,7 @@ btnTwo.addEventListener('click', function addNumber(){
         totalInput.totalDisplay[totalInput.totalDisplay.length - 1] = totalInput.totalDisplay[totalInput.totalDisplay.length - 1] + '2'
     }
     
-    console.log(totalInput.totalDisplay)
+    
 })
 btnThree.addEventListener('click', function addNumber(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -133,7 +179,7 @@ btnThree.addEventListener('click', function addNumber(){
         totalInput.totalDisplay[totalInput.totalDisplay.length - 1] = totalInput.totalDisplay[totalInput.totalDisplay.length - 1] + '3'
     }
     
-    console.log(totalInput.totalDisplay)
+    
 })
 btnFour.addEventListener('click', function addNumber(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -146,7 +192,7 @@ btnFour.addEventListener('click', function addNumber(){
         totalInput.totalDisplay[totalInput.totalDisplay.length - 1] = totalInput.totalDisplay[totalInput.totalDisplay.length - 1] + '4'
     }
     
-    console.log(totalInput.totalDisplay)
+    
 })
 btnFive.addEventListener('click', function addNumber(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -159,7 +205,7 @@ btnFive.addEventListener('click', function addNumber(){
         totalInput.totalDisplay[totalInput.totalDisplay.length - 1] = totalInput.totalDisplay[totalInput.totalDisplay.length - 1] + '5'
     }
     
-    console.log(totalInput.totalDisplay)
+    
 })
 btnSix.addEventListener('click', function addNumber(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -172,7 +218,7 @@ btnSix.addEventListener('click', function addNumber(){
         totalInput.totalDisplay[totalInput.totalDisplay.length - 1] = totalInput.totalDisplay[totalInput.totalDisplay.length - 1] + '6'
     }
     
-    console.log(totalInput.totalDisplay)
+    
 })
 btnSeven.addEventListener('click', function addNumber(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -185,7 +231,7 @@ btnSeven.addEventListener('click', function addNumber(){
         totalInput.totalDisplay[totalInput.totalDisplay.length - 1] = totalInput.totalDisplay[totalInput.totalDisplay.length - 1] + '7'
     }
     
-    console.log(totalInput.totalDisplay)
+    
 })
 btnEight.addEventListener('click', function addNumber(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -198,7 +244,7 @@ btnEight.addEventListener('click', function addNumber(){
         totalInput.totalDisplay[totalInput.totalDisplay.length - 1] = totalInput.totalDisplay[totalInput.totalDisplay.length - 1] + '8'
     }
     
-    console.log(totalInput.totalDisplay)
+    
 })
 btnNine.addEventListener('click', function addNumber(){
  if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -211,7 +257,7 @@ btnNine.addEventListener('click', function addNumber(){
         totalInput.totalDisplay[totalInput.totalDisplay.length - 1] = totalInput.totalDisplay[totalInput.totalDisplay.length - 1] + '9'
     }
     
-    console.log(totalInput.totalDisplay)
+    
 })
 btnZero.addEventListener('click', function addNumber(){
     if (totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '+' || totalInput.totalDisplay[totalInput.totalDisplay.length - 1] === '-'
@@ -224,5 +270,5 @@ btnZero.addEventListener('click', function addNumber(){
         totalInput.totalDisplay[totalInput.totalDisplay.length - 1] = totalInput.totalDisplay[totalInput.totalDisplay.length - 1] + '0'
     }
     
-    console.log(totalInput.totalDisplay)
+    
 })
